@@ -1,0 +1,12 @@
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\menus\BotRunnerMenu.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\menus\actions\StopBotAction.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\modele\BotInfos.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\modele\RunningBotsManager.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\util\errors\BotManagerException.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\util\BotFactory.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\BotManagerApp.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\menus\HomeMenu.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\menus\actions\TogglePauseAction.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\menus\actions\StartBotAction.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\util\errors\AlreadyRunningBotException.java
+D:\Java\Projets\BotManager\src\main\java\fr\lewon\bot\manager\util\BotCreator.java
