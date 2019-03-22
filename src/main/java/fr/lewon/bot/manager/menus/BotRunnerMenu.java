@@ -22,8 +22,14 @@ public class BotRunnerMenu extends Menu {
 	@Override
 	protected List<AbstractMenu> getMenuOptions() {
 		List<AbstractMenu> options = new ArrayList<>();
-		options.add(new StopBotAction(this, botInfos.getBotRunner()));
-		options.add(new TogglePauseAction(this, botInfos.getBotRunner()));
+		switch (botInfos.getBotRunner().getState()) {
+		case RUNNING:
+		case PAUSED:
+			options.add(new StopBotAction(this, botInfos.getBotRunner()));
+			options.add(new TogglePauseAction(this, botInfos.getBotRunner()));
+		default:
+			break;
+		}
 		return options;
 	}
 

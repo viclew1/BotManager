@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.lewon.bot.manager.menus.actions.StartBotAction;
+import fr.lewon.bot.manager.menus.actions.TrimStoppedBotsAction;
 import fr.lewon.bot.manager.modele.BotInfos;
 import fr.lewon.bot.manager.modele.RunningBotsManager;
 import fr.lewon.client.menus.AbstractMenu;
@@ -22,6 +23,7 @@ public class HomeMenu extends Menu {
 			options.add(new BotRunnerMenu(this, bi));
 		}
 		options.add(new StartBotAction(this));
+		options.add(new TrimStoppedBotsAction(this));
 		return options;
 	}
 

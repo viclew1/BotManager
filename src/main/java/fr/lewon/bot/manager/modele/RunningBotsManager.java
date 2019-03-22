@@ -11,6 +11,7 @@ import fr.lewon.bot.errors.BotRunnerException;
 import fr.lewon.bot.manager.util.errors.AlreadyRunningBotException;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.State;
 
 public enum RunningBotsManager {
 
@@ -47,6 +48,17 @@ public enum RunningBotsManager {
 		return runners.values().stream()
 				.flatMap(b -> b.stream())
 				.collect(Collectors.toList());
+	}
+
+	public void trimStoppedBots() {
+		Map<String, List<BotInfos>> trimmedMap = new HashMap<>();
+		for (BotInfos bi : getBotInfosList()) {
+			if (bi.getBotRunner().getState() != State.STOPPED) {
+				trimmedMap.putIfAbsent(bi.getGameName(), new ArrayList<>());
+				trimmedMap.get(bi.getGameName()).add(bi);
+			}
+		}
+		this.runners = trimmedMap;
 	}
 
 }
