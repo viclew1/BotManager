@@ -1,5 +1,6 @@
 package fr.lewon.bot.manager.menus.actions;
 
+import fr.lewon.bot.manager.modele.RunningBotsManager;
 import fr.lewon.client.exceptions.ActionException;
 import fr.lewon.client.menus.AbstractMenu;
 import fr.lewon.client.menus.Action;
@@ -12,8 +13,8 @@ public class TrimStoppedBotsAction extends Action {
 
 	@Override
 	protected AbstractMenu processAction(AbstractMenu caller) throws ActionException {
-		// TODO Auto-generated method stub
-		return null;
+		RunningBotsManager.INSTANCE.trimStoppedBots();
+		return caller;
 	}
 
 	@Override
