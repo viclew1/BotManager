@@ -38,7 +38,7 @@ public class BotRunnerMenu extends Menu {
 		State state = botInfos.getBotRunner().getState();
 		String gameName = botInfos.getGameName();
 		String login = botInfos.getLogin();
-		return state + " - " + gameName + " ( " + login + " )";
+		return state + " - " + gameName + " (" + login + ")";
 	}
 
 }
