@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.lewon.bot.errors.BotRunnerException;
-import fr.lewon.bot.manager.modele.RunningBotsManager;
+import fr.lewon.bot.manager.modele.BotRunnersManager;
 import fr.lewon.bot.manager.util.BotFactory;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 import fr.lewon.client.exceptions.ActionException;
@@ -30,7 +30,7 @@ public class StartBotAction extends Action {
 		String login = UserInputUtil.INSTANCE.askString("Enter your login", false, true);
 		String password = UserInputUtil.INSTANCE.askString("Enter your password", true, true);
 		try {
-			RunningBotsManager.INSTANCE.startBot(login, password, bot.getGameName(), bot.getNewBot());
+			BotRunnersManager.INSTANCE.startBot(login, password, bot.getGameName(), bot.getNewBot());
 		} catch (BotManagerException | BotRunnerException e) {
 			System.out.println(e.getMessage());
 		}

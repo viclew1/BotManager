@@ -17,7 +17,6 @@ import fr.lewon.client.menus.Menu;
 import fr.lewon.client.menus.MenuRunner;
 import fr.lewon.client.util.parameters.Parameter;
 import fr.lewon.client.util.parameters.impl.DirParameter;
-import fr.lewon.client.util.parameters.impl.FileParameter;
 import fr.lewon.client.util.parameters.impl.SimpleParameter;
 
 public class BotManagerApp extends AbstractAppClient {
@@ -26,7 +25,6 @@ public class BotManagerApp extends AbstractAppClient {
 
 	private static final Parameter PATH_LOGS = new DirParameter("logs.path", true, true);
 	private static final Parameter LOGS_LEVEL_PARAM = new SimpleParameter("logs.level", false);
-	private static final Parameter PROXY_SETTINGS_PATH_PARAM = new FileParameter("proxy.settings.path", false, true);
 
 
 	public static void main(String[] args) throws CliException {
@@ -38,7 +36,6 @@ public class BotManagerApp extends AbstractAppClient {
 		List<Parameter> parameters = new ArrayList<>();
 		parameters.add(PATH_LOGS);
 		parameters.add(LOGS_LEVEL_PARAM);
-		parameters.add(PROXY_SETTINGS_PATH_PARAM);
 		return parameters;
 	}
 

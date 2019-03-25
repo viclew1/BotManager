@@ -13,7 +13,7 @@ import fr.lewon.bot.manager.util.errors.BotManagerException;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.State;
 
-public enum RunningBotsManager {
+public enum BotRunnersManager {
 
 	INSTANCE;
 

@@ -13,9 +13,11 @@
 			<artifactId>DefaultClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<!-- BOTS -->
 		<dependency>
-			<groupId>DefaultBot</groupId>
-			<artifactId>DefaultBot</artifactId>
+			<groupId>LWCli</groupId>
+			<artifactId>LWCli</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

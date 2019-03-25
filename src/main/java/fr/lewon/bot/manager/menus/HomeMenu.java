@@ -6,7 +6,7 @@ import java.util.List;
 import fr.lewon.bot.manager.menus.actions.StartBotAction;
 import fr.lewon.bot.manager.menus.actions.TrimStoppedBotsAction;
 import fr.lewon.bot.manager.modele.BotInfos;
-import fr.lewon.bot.manager.modele.RunningBotsManager;
+import fr.lewon.bot.manager.modele.BotRunnersManager;
 import fr.lewon.client.menus.AbstractMenu;
 import fr.lewon.client.menus.Menu;
 
@@ -19,7 +19,7 @@ public class HomeMenu extends Menu {
 	@Override
 	protected List<AbstractMenu> getMenuOptions() {
 		List<AbstractMenu> options = new ArrayList<>();
-		for (BotInfos bi : RunningBotsManager.INSTANCE.getBotInfosList()) {
+		for (BotInfos bi : BotRunnersManager.INSTANCE.getBotInfosList()) {
 			options.add(new BotRunnerMenu(this, bi));
 		}
 		options.add(new StartBotAction(this));
