@@ -2,13 +2,13 @@ package fr.lewon.bot.manager.modele;
 
 import fr.lewon.bot.runner.BotRunner;
 
-public class BotInfos {
+public class RunnerInfos {
 
 	private final BotRunner botRunner;
 	private final String login;
 	private final String gameName;
 
-	public BotInfos(BotRunner botRunner, String login, String gameName) {
+	public RunnerInfos(BotRunner botRunner, String login, String gameName) {
 		this.botRunner = botRunner;
 		this.login = login;
 		this.gameName = gameName;

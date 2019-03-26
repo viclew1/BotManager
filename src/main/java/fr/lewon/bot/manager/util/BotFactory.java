@@ -26,4 +26,13 @@ public enum BotFactory {
 		return gameName;
 	}
 
+	public static BotFactory fromGameName(String gameName) {
+		for (BotFactory bf : values()) {
+			if (bf.getGameName().equals(gameName)) {
+				return bf;
+			}
+		}
+		return null;
+	}
+
 }
