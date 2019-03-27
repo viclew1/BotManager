@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.lewon.bot.manager.entities.AvailableBots;
 import fr.lewon.bot.manager.entities.BotActionInfos;
 import fr.lewon.bot.manager.entities.BotInfosList;
+import fr.lewon.bot.manager.entities.BotLogs;
 import fr.lewon.bot.manager.service.BotService;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 
@@ -25,7 +26,7 @@ public class BotController {
 	public AvailableBots getAvailableBots() throws BotManagerException {
 		return botService.getAvailableBots();
 	}
-	
+
 	@RequestMapping(
 			method = RequestMethod.GET, produces = "application/json", consumes = "application/json",
 			value = "/infos/all")
@@ -39,26 +40,33 @@ public class BotController {
 	public void startBot(@RequestBody BotActionInfos infos) throws BotManagerException {
 		botService.startBot(infos.getLogin(), infos.getPassword(), infos.getGameName());
 	}
-	
+
 	@RequestMapping(
 			method = RequestMethod.POST, produces = "application/json", consumes = "application/json",
 			value = "/stop")
 	public void stopBot(@RequestBody BotActionInfos infos) throws BotManagerException {
 		botService.stopBot(infos.getLogin(), infos.getGameName());
 	}
-	
+
 	@RequestMapping(
 			method = RequestMethod.POST, produces = "application/json", consumes = "application/json",
 			value = "/pause")
 	public void pauseBot(@RequestBody BotActionInfos infos) throws BotManagerException {
 		botService.pauseBot(infos.getLogin(), infos.getGameName());
 	}
-	
+
 	@RequestMapping(
 			method = RequestMethod.POST, produces = "application/json", consumes = "application/json",
 			value = "/trim")
 	public void trimStoppedBots() throws BotManagerException {
 		botService.trimStoppedBots();
+	}
+
+	@RequestMapping(
+			method = RequestMethod.POST, produces = "application/json", consumes = "application/json",
+			value = "/logs")
+	public BotLogs getLogs(@RequestBody BotActionInfos infos) throws BotManagerException {
+		return botService.getBotLogs(infos.getLogin(), infos.getGameName());
 	}
 
 }

@@ -33,7 +33,7 @@ public enum BotRunnersManager {
 		runners.get(gameName).add(new RunnerInfos(runner, login, gameName));
 	}
 
-	private RunnerInfos getRunnerInfos(String login, String gameName) throws BotManagerException {
+	public RunnerInfos getRunnerInfos(String login, String gameName) throws BotManagerException {
 		List<RunnerInfos> runnerInfosList = runners.get(gameName);
 		if (runnerInfosList == null) {
 			throw new NoBotForThisGameException(gameName);
@@ -45,17 +45,17 @@ public enum BotRunnersManager {
 		}
 		throw new NoBotForThisLoginException(login, gameName);
 	}
-	
+
 	public void stopBot(String login, String gameName) throws BotManagerException, BotRunnerException {
 		RunnerInfos runnerInfos = getRunnerInfos(login, gameName);
 		runnerInfos.getBotRunner().stop();
 	}
-	
+
 	public void pauseBot(String login, String gameName) throws BotManagerException, BotRunnerException {
 		RunnerInfos runnerInfos = getRunnerInfos(login, gameName);
 		runnerInfos.getBotRunner().togglePause();
 	}
-	
+
 	private void verifyNotRunning(String gameName, String login) throws AlreadyRunningBotException {
 
 		List<RunnerInfos> botInfos = runners.get(gameName);

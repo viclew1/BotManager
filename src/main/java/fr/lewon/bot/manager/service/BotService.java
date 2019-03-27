@@ -2,6 +2,7 @@ package fr.lewon.bot.manager.service;
 
 import fr.lewon.bot.manager.entities.AvailableBots;
 import fr.lewon.bot.manager.entities.BotInfosList;
+import fr.lewon.bot.manager.entities.BotLogs;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 
 public interface BotService {
@@ -17,5 +18,7 @@ public interface BotService {
 	BotInfosList getAllBotInfos() throws BotManagerException;
 
 	void trimStoppedBots() throws BotManagerException;
-	
+
+	BotLogs getBotLogs(String login, String gameName) throws BotManagerException;
+
 }

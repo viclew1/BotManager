@@ -10,6 +10,7 @@ import fr.lewon.bot.errors.BotRunnerException;
 import fr.lewon.bot.manager.entities.AvailableBots;
 import fr.lewon.bot.manager.entities.BotInfos;
 import fr.lewon.bot.manager.entities.BotInfosList;
+import fr.lewon.bot.manager.entities.BotLogs;
 import fr.lewon.bot.manager.modele.BotRunnersManager;
 import fr.lewon.bot.manager.service.BotService;
 import fr.lewon.bot.manager.util.BotFactory;
@@ -73,6 +74,13 @@ public class BotServiceImpl implements BotService {
 	@Override
 	public void trimStoppedBots() throws BotManagerException {
 		BotRunnersManager.INSTANCE.trimStoppedBots();
+	}
+
+	@Override
+	public BotLogs getBotLogs(String login, String gameName) throws BotManagerException {
+		BotLogs bl = new BotLogs();
+		bl.setLogs(BotRunnersManager.INSTANCE.getRunnerInfos(login, gameName).getBotRunner().getLogs());
+		return bl;
 	}
 
 }
