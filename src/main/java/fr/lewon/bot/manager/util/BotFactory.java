@@ -3,12 +3,14 @@ package fr.lewon.bot.manager.util;
 import com.leek.wars.bot.LWBot;
 
 import fr.lewon.bot.AbstractBot;
+import fr.lewon.smutstone.bot.SmutStoneBot;
 import fr.lewon.web.bot.HHBot;
 
 public enum BotFactory {
 
 	HHBOT("Hentai Heroes", () -> new HHBot()),
-	LWBOT("Leek Wars", () -> new LWBot());
+	LWBOT("Leek Wars", () -> new LWBot()),
+	SMUTSTONE_BOT("Smutstone", () -> new SmutStoneBot());
 
 	private final BotCreator botCreator;
 	private final String gameName;
