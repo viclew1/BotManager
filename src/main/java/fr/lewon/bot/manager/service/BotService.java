@@ -1,13 +1,16 @@
 package fr.lewon.bot.manager.service;
 
-import fr.lewon.bot.manager.entities.AvailableBots;
-import fr.lewon.bot.manager.entities.BotInfosList;
-import fr.lewon.bot.manager.entities.BotLogs;
+import java.util.Map;
+
+import fr.lewon.bot.manager.entities.AvailableBotsDTO;
+import fr.lewon.bot.manager.entities.BotInfosListDTO;
+import fr.lewon.bot.manager.entities.BotLogsDTO;
+import fr.lewon.bot.manager.entities.BotMethodsDTO;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 
 public interface BotService {
 
-	AvailableBots getAvailableBots() throws BotManagerException;
+	AvailableBotsDTO getAvailableBots() throws BotManagerException;
 
 	void startBot(String login, String password, String gameName) throws BotManagerException;
 
@@ -15,10 +18,15 @@ public interface BotService {
 
 	void pauseBot(String login, String gameName) throws BotManagerException;
 
-	BotInfosList getAllBotInfos() throws BotManagerException;
+	BotInfosListDTO getAllBotInfos() throws BotManagerException;
 
 	void trimStoppedBots() throws BotManagerException;
 
-	BotLogs getBotLogs(String login, String gameName) throws BotManagerException;
+	BotLogsDTO getBotLogs(String login, String gameName) throws BotManagerException;
+
+	BotMethodsDTO getMethods(String login, String gameName) throws BotManagerException;
+
+	Object callMethod(String login, String gameName, Long id, Map<String, Object> params) throws BotManagerException;
+
 
 }
