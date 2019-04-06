@@ -96,7 +96,7 @@ public class BotServiceImpl implements BotService {
 		RunnerInfos infos = BotRunnersManager.INSTANCE.getRunnerInfos(login, gameName);
 
 		List<BotMethodDTO> methods = new ArrayList<>();
-		for (AbstractBotMethod botMethod : infos.getBotRunner().getBot().getBotMethods()) {
+		for (AbstractBotMethod<?, ?> botMethod : infos.getBotRunner().getBot().getBotMethods()) {
 			Long id = botMethod.getId();
 			String label = botMethod.getLabel();
 			Map<String, Object> params = botMethod.getneededParameters();
@@ -108,13 +108,13 @@ public class BotServiceImpl implements BotService {
 	@Override
 	public Object callMethod(String login, String gameName, Long id, Map<String, Object> params) throws BotManagerException {
 		RunnerInfos infos = BotRunnersManager.INSTANCE.getRunnerInfos(login, gameName);
-		AbstractBotMethod method = infos.getBotRunner().getBot().getBotMethodById(id);
+		AbstractBotMethod<?, ?> method = infos.getBotRunner().getBot().getBotMethodById(id);
 		if (method == null) {
 			throw new NoBotMethodForThisIdException(gameName, id);
 		}
 		try {
 			return method.process(infos.getBotRunner(), params);
-		} catch (BotRunnerException e) {
+		} catch (Exception e) {
 			throw new BotManagerException(e.getMessage());
 		}
 	}
