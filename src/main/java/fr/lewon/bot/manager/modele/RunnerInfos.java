@@ -1,21 +1,26 @@
 package fr.lewon.bot.manager.modele;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import fr.lewon.bot.runner.BotRunner;
 
 public class RunnerInfos {
 
+	private static final AtomicLong ID_GENERATOR = new AtomicLong();
+
+	private final Long id;
 	private final BotRunner botRunner;
 	private final String login;
-	private final String gameName;
 
-	public RunnerInfos(BotRunner botRunner, String login, String gameName) {
+	public RunnerInfos(BotRunner botRunner, String login) {
 		this.botRunner = botRunner;
 		this.login = login;
-		this.gameName = gameName;
+		this.id = ID_GENERATOR.incrementAndGet();
 	}
 
-	public String getGameName() {
-		return gameName;
+
+	public Long getId() {
+		return id;
 	}
 	public BotRunner getBotRunner() {
 		return botRunner;

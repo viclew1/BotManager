@@ -8,19 +8,21 @@ import fr.lewon.web.bot.HHBot;
 
 public enum BotFactory {
 
-	HHBOT("Hentai Heroes", () -> new HHBot()),
-	LWBOT("Leek Wars", () -> new LWBot()),
-	SMUTSTONE_BOT("Smutstone", () -> new SmutStoneBot());
+	HHBOT("Hentai Heroes", "hentaiheroes.jpg", () -> new HHBot()),
+	LWBOT("Leek Wars", "leekwars.png", () -> new LWBot()),
+	SMUTSTONE_BOT("Smutstone", "smutstone.jpg", () -> new SmutStoneBot());
 
 	private final BotCreator botCreator;
 	private final String gameName;
+	private final String iconFileName;
 
-	private BotFactory(String gameName, BotCreator botCreator) {
+	private BotFactory(String gameName, String iconFileName, BotCreator botCreator) {
 		this.botCreator = botCreator;
 		this.gameName = gameName;
+		this.iconFileName = iconFileName;
 	}
 
-	public AbstractBot getNewBot() {
+	public AbstractBot<?, ?> getNewBot() {
 		return botCreator.init();
 	}
 
@@ -28,13 +30,8 @@ public enum BotFactory {
 		return gameName;
 	}
 
-	public static BotFactory fromGameName(String gameName) {
-		for (BotFactory bf : values()) {
-			if (bf.getGameName().equals(gameName)) {
-				return bf;
-			}
-		}
-		return null;
+	public String getIconFileName() {
+		return iconFileName;
 	}
 
 }

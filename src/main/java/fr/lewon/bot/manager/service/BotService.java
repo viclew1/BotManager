@@ -2,31 +2,34 @@ package fr.lewon.bot.manager.service;
 
 import java.util.Map;
 
-import fr.lewon.bot.manager.entities.AvailableBotsDTO;
-import fr.lewon.bot.manager.entities.BotInfosListDTO;
+import org.springframework.core.io.ClassPathResource;
+
+import fr.lewon.bot.manager.entities.GameInfosListDTO;
 import fr.lewon.bot.manager.entities.BotLogsDTO;
 import fr.lewon.bot.manager.entities.BotMethodsDTO;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 
 public interface BotService {
 
-	AvailableBotsDTO getAvailableBots() throws BotManagerException;
+	void startBot(String login, String password, String gameId) throws BotManagerException;
 
-	void startBot(String login, String password, String gameName) throws BotManagerException;
+	void stopBot(Long id) throws BotManagerException;
 
-	void stopBot(String login, String gameName) throws BotManagerException;
+	void pauseBot(Long id) throws BotManagerException;
 
-	void pauseBot(String login, String gameName) throws BotManagerException;
-
-	BotInfosListDTO getAllBotInfos() throws BotManagerException;
+	GameInfosListDTO getAllBotInfos() throws BotManagerException;
 
 	void trimStoppedBots() throws BotManagerException;
 
-	BotLogsDTO getBotLogs(String login, String gameName) throws BotManagerException;
+	void trimStoppedBot(Long id) throws BotManagerException;
 
-	BotMethodsDTO getMethods(String login, String gameName) throws BotManagerException;
+	BotLogsDTO getBotLogs(Long id) throws BotManagerException;
 
-	Object callMethod(String login, String gameName, Long id, Map<String, Object> params) throws BotManagerException;
+	BotMethodsDTO getMethods(Long id) throws BotManagerException;
+
+	Object callMethod(Long id, Long idMethod, Map<String, Object> params) throws BotManagerException;
+
+	ClassPathResource getIcon(String gameId) throws BotManagerException;
 
 
 }

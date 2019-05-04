@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import fr.lewon.bot.AbstractBot;
 import fr.lewon.bot.errors.BotRunnerException;
+import fr.lewon.bot.errors.WrongStateRunnerException;
+import fr.lewon.bot.manager.util.BotFactory;
 import fr.lewon.bot.manager.util.errors.AlreadyRunningBotException;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
-import fr.lewon.bot.manager.util.errors.NoBotForThisGameException;
-import fr.lewon.bot.manager.util.errors.NoBotForThisLoginException;
+import fr.lewon.bot.manager.util.errors.NoBotFoundException;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.State;
 
@@ -23,67 +24,80 @@ public enum BotRunnersManager {
 	 * key : name of the game
 	 * value : BotInfos linked to this game
 	 */
-	private Map<String, List<RunnerInfos>> runners = new HashMap<>();
+	private Map<GameInfos, List<RunnerInfos>> runners = initRunnersMap();
 
-	public void startBot(String login, String password, String gameName, AbstractBot bot) throws BotRunnerException, BotManagerException {
-		verifyNotRunning(gameName, login);
-		BotRunner runner = new BotRunner(bot);
-		runner.start(login, password);
-		runners.putIfAbsent(gameName, new ArrayList<>());
-		runners.get(gameName).add(new RunnerInfos(runner, login, gameName));
+	private Map<GameInfos, List<RunnerInfos>> initRunnersMap() {
+		Map<GameInfos, List<RunnerInfos>> map = new HashMap<>();
+		for (BotFactory bf : BotFactory.values()) {
+			map.put(new GameInfos(bf.name(), bf.getGameName()), new ArrayList<>());
+		}
+		return map;
 	}
 
-	public RunnerInfos getRunnerInfos(String login, String gameName) throws BotManagerException {
-		List<RunnerInfos> runnerInfosList = runners.get(gameName);
-		if (runnerInfosList == null) {
-			throw new NoBotForThisGameException(gameName);
-		}
-		for (RunnerInfos ri : runnerInfosList) {
-			if (ri.getLogin().equals(login)) {
-				return ri;
+	public void startBot(String login, String password, BotFactory bf) throws BotRunnerException, BotManagerException {
+		String gameId = bf.name();
+		GameInfos gi = new GameInfos(gameId, bf.getGameName());
+		verifyNotRunning(gi, login);
+		BotRunner runner = new BotRunner(bf.getNewBot());
+		runner.start(login, password);
+		runners.putIfAbsent(gi, new ArrayList<>());
+		runners.get(gi).add(new RunnerInfos(runner, login));
+	}
+
+	public RunnerInfos getRunnerInfos(Long id) throws BotManagerException {
+		for (RunnerInfos runner : runners.values().stream().flatMap(List::stream).collect(Collectors.toList())) {
+			if (runner.getId().equals(id)) {
+				return runner;
 			}
 		}
-		throw new NoBotForThisLoginException(login, gameName);
+		throw new NoBotFoundException(id);
 	}
 
-	public void stopBot(String login, String gameName) throws BotManagerException, BotRunnerException {
-		RunnerInfos runnerInfos = getRunnerInfos(login, gameName);
+	public void stopBot(Long id) throws BotManagerException, BotRunnerException {
+		RunnerInfos runnerInfos = getRunnerInfos(id);
 		runnerInfos.getBotRunner().stop();
 	}
 
-	public void pauseBot(String login, String gameName) throws BotManagerException, BotRunnerException {
-		RunnerInfos runnerInfos = getRunnerInfos(login, gameName);
+	public void pauseBot(Long id) throws BotManagerException, BotRunnerException {
+		RunnerInfos runnerInfos = getRunnerInfos(id);
 		runnerInfos.getBotRunner().togglePause();
 	}
 
-	private void verifyNotRunning(String gameName, String login) throws AlreadyRunningBotException {
-
-		List<RunnerInfos> botInfos = runners.get(gameName);
+	private void verifyNotRunning(GameInfos gi, String login) throws AlreadyRunningBotException {
+		List<RunnerInfos> botInfos = runners.get(gi);
 		if (botInfos == null) {
 			return;
 		}
 		for (RunnerInfos bi : botInfos) {
 			if (bi.getLogin().equals(login)) {
-				throw new AlreadyRunningBotException(gameName, login);
+				throw new AlreadyRunningBotException(gi.getName(), login);
 			}
 		}
 	}
 
-	public List<RunnerInfos> getBotInfosList() {
-		return runners.values().stream()
-				.flatMap(b -> b.stream())
-				.collect(Collectors.toList());
+	public Map<GameInfos, List<RunnerInfos>> getBotInfosMap() {
+		return runners;
 	}
 
 	public void trimStoppedBots() {
-		Map<String, List<RunnerInfos>> trimmedMap = new HashMap<>();
-		for (RunnerInfos bi : getBotInfosList()) {
-			if (bi.getBotRunner().getState() != State.STOPPED) {
-				trimmedMap.putIfAbsent(bi.getGameName(), new ArrayList<>());
-				trimmedMap.get(bi.getGameName()).add(bi);
+		for (Entry<GameInfos, List<RunnerInfos>> entry : runners.entrySet()) {
+			entry.setValue(entry.getValue().stream()
+					.filter(ri -> ri.getBotRunner().getState() != State.STOPPED)
+					.collect(Collectors.toList()));
+		}
+	}
+
+	public void trimStoppedBot(Long id) throws BotManagerException, BotRunnerException {
+		RunnerInfos runnerInfos = getRunnerInfos(id);
+		if (runnerInfos.getBotRunner().getState() != State.STOPPED) {
+			throw new WrongStateRunnerException("clean", runnerInfos.getBotRunner().getState(), State.STOPPED);
+		}
+		for (List<RunnerInfos> runnersInfos : runners.values()) {
+			if (runnersInfos.contains(runnerInfos)) {
+				runnersInfos.remove(runnerInfos);
+				break;
 			}
 		}
-		this.runners = trimmedMap;
 	}
 
 }
