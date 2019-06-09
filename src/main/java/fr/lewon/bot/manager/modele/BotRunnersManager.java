@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import fr.lewon.bot.errors.BotRunnerException;
 import fr.lewon.bot.errors.WrongStateRunnerException;
-import fr.lewon.bot.manager.util.BotFactory;
+import fr.lewon.bot.manager.util.BotRunnerBuilderFactory;
 import fr.lewon.bot.manager.util.errors.AlreadyRunningBotException;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 import fr.lewon.bot.manager.util.errors.NoBotFoundException;
@@ -28,18 +28,18 @@ public enum BotRunnersManager {
 
 	private Map<GameInfos, List<RunnerInfos>> initRunnersMap() {
 		Map<GameInfos, List<RunnerInfos>> map = new HashMap<>();
-		for (BotFactory bf : BotFactory.values()) {
+		for (BotRunnerBuilderFactory bf : BotRunnerBuilderFactory.values()) {
 			map.put(new GameInfos(bf.name(), bf.getGameName()), new ArrayList<>());
 		}
 		return map;
 	}
 
-	public void startBot(String login, String password, BotFactory bf) throws BotRunnerException, BotManagerException {
+	public void createBot(String login, String password, Map<String, Object> params, BotRunnerBuilderFactory bf) throws BotManagerException {
 		String gameId = bf.name();
 		GameInfos gi = new GameInfos(gameId, bf.getGameName());
 		verifyNotRunning(gi, login);
-		BotRunner runner = new BotRunner(bf.getNewBot());
-		runner.start(login, password);
+		BotRunner runner = bf.getBotRunnerBuilder().buildRunner(login, password);
+		runner.init(params);
 		runners.putIfAbsent(gi, new ArrayList<>());
 		runners.get(gi).add(new RunnerInfos(runner, login));
 	}
@@ -61,6 +61,11 @@ public enum BotRunnersManager {
 	public void pauseBot(Long id) throws BotManagerException, BotRunnerException {
 		RunnerInfos runnerInfos = getRunnerInfos(id);
 		runnerInfos.getBotRunner().togglePause();
+	}
+	
+	public void startBot(Long id) throws BotManagerException, BotRunnerException {
+		RunnerInfos runnerInfos = getRunnerInfos(id);
+		runnerInfos.getBotRunner().start();
 	}
 
 	private void verifyNotRunning(GameInfos gi, String login) throws AlreadyRunningBotException {

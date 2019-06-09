@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.lewon.bot.manager.entities.BotInfosDTO;
 import fr.lewon.bot.manager.entities.BotLogsDTO;
 import fr.lewon.bot.manager.entities.BotMethodDTO;
 import fr.lewon.bot.manager.entities.BotMethodsDTO;
+import fr.lewon.bot.manager.entities.BotPropertiesDTO;
 import fr.lewon.bot.manager.entities.GameInfosListDTO;
 import fr.lewon.bot.manager.entities.UserInfosDTO;
 import fr.lewon.bot.manager.service.BotService;
@@ -39,9 +41,16 @@ public class BotController {
 	}
 
 	@RequestMapping(
-			method = RequestMethod.POST, produces = "application/json", consumes = "application/json", value = "/{gameId}/start")
-	public ResponseEntity<Void> startBot(@PathVariable String gameId, @RequestBody UserInfosDTO infos) throws BotManagerException {
-		botService.startBot(infos.getLogin(), infos.getPassword(), gameId);
+			method = RequestMethod.GET, produces = "application/json", value = "/{id}")
+	public ResponseEntity<BotInfosDTO> getBotInfos(@PathVariable Long id) throws BotManagerException {
+		BotInfosDTO infos = botService.getBotInfos(id);
+		return new ResponseEntity<>(infos, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			method = RequestMethod.POST, produces = "application/json", consumes = "application/json", value = "/{gameId}/create")
+	public ResponseEntity<Void> createBot(@PathVariable String gameId, @RequestBody UserInfosDTO infos) throws BotManagerException {
+		botService.createBot(infos.getLogin(), infos.getPassword(), gameId, infos.getParams());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -49,6 +58,13 @@ public class BotController {
 			method = RequestMethod.POST, produces = "application/json", value = "/{id}/stop")
 	public ResponseEntity<Void> stopBot(@PathVariable Long id) throws BotManagerException {
 		botService.stopBot(id);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			method = RequestMethod.POST, produces = "application/json", value = "/{id}/start")
+	public ResponseEntity<Void> startBot(@PathVariable Long id) throws BotManagerException {
+		botService.startBot(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -81,23 +97,29 @@ public class BotController {
 	}
 
 	@RequestMapping(
-			method = RequestMethod.GET, produces = "application/json", value = "/{id}/methods")
-	public ResponseEntity<BotMethodsDTO> getMethods(@PathVariable Long id) throws BotManagerException {
-		BotMethodsDTO methods = botService.getMethods(id);
+			method = RequestMethod.GET, produces = "application/json", value = "/{gameId}/methods/{botId}")
+	public ResponseEntity<BotMethodsDTO> getMethods(@PathVariable String gameId, @PathVariable Long botId) throws BotManagerException {
+		BotMethodsDTO methods = botService.getMethods(gameId, botId);
 		return new ResponseEntity<>(methods, HttpStatus.OK);
 	}
 
 	@RequestMapping(
-			method = RequestMethod.POST, produces = "application/json", consumes = "application/json", value = "/{id}/methods/process")
-	public ResponseEntity<Object> callMethod(@PathVariable Long id, @RequestBody BotMethodDTO method) throws BotManagerException {
-		Object result = botService.callMethod(id, method.getId(), method.getParams());
+			method = RequestMethod.POST, produces = "application/json", consumes = "application/json", value = "/{gameId}/methods/{botId}/process")
+	public ResponseEntity<Object> callMethod(@PathVariable String gameId, @PathVariable Long botId, @RequestBody BotMethodDTO method) throws BotManagerException {
+		Object result = botService.callMethod(gameId, method.getId(), botId, method.getParams());
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/{gameId}/properties")
+	public ResponseEntity<BotPropertiesDTO> getParams(@PathVariable String gameId) throws BotManagerException {
+		BotPropertiesDTO props = botService.getProperties(gameId);
+		return new ResponseEntity<>(props, HttpStatus.OK);
 	}
 
 	@RequestMapping(
 			method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE, value = "/icons/{gameId}")
 	public void getImage(@PathVariable String gameId, HttpServletResponse response) throws BotManagerException {
-		ClassPathResource imgFile = botService.getIcon(gameId);
+			ClassPathResource imgFile = botService.getIcon(gameId);
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 		try {
 			StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());

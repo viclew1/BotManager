@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>BotManager</groupId>
+	<groupId>lewon.bot.manager</groupId>
 	<artifactId>BotManager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
@@ -21,24 +21,24 @@
 
 		<!-- ENTITIES -->
 		<dependency>
-			<groupId>BotManagerEntities</groupId>
+			<groupId>lewon.bot.manager</groupId>
 			<artifactId>BotManagerEntities</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- BOTS -->
 		<dependency>
-			<groupId>LWCli</groupId>
-			<artifactId>LWCli</artifactId>
+			<groupId>lewon.bot.manager</groupId>
+			<artifactId>LWBot</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>HHBot</groupId>
+			<groupId>lewon.bot.manager</groupId>
 			<artifactId>HHBot</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>SmutStoneBot</groupId>
+			<groupId>lewon.bot.manager</groupId>
 			<artifactId>SmutStoneBot</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

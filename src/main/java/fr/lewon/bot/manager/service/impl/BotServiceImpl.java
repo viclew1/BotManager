@@ -14,32 +14,31 @@ import fr.lewon.bot.manager.entities.BotInfosDTO;
 import fr.lewon.bot.manager.entities.BotLogsDTO;
 import fr.lewon.bot.manager.entities.BotMethodDTO;
 import fr.lewon.bot.manager.entities.BotMethodsDTO;
+import fr.lewon.bot.manager.entities.BotPropertiesDTO;
+import fr.lewon.bot.manager.entities.BotPropertyDTO;
 import fr.lewon.bot.manager.entities.GameInfosDTO;
 import fr.lewon.bot.manager.entities.GameInfosListDTO;
 import fr.lewon.bot.manager.modele.BotRunnersManager;
 import fr.lewon.bot.manager.modele.GameInfos;
 import fr.lewon.bot.manager.modele.RunnerInfos;
 import fr.lewon.bot.manager.service.BotService;
-import fr.lewon.bot.manager.util.BotFactory;
+import fr.lewon.bot.manager.util.BotRunnerBuilderFactory;
 import fr.lewon.bot.manager.util.errors.BotManagerException;
 import fr.lewon.bot.manager.util.errors.NoBotForThisGameException;
 import fr.lewon.bot.manager.util.errors.NoBotMethodForThisIdException;
-import fr.lewon.bot.methods.AbstractBotMethod;
+import fr.lewon.bot.methods.IBotMethod;
+import fr.lewon.bot.runner.BotRunner;
 
 @Service
 public class BotServiceImpl implements BotService {
 
 	@Override
-	public void startBot(String login, String password, String gameId) throws BotManagerException {
-		BotFactory botFacto = BotFactory.valueOf(gameId);
+	public void createBot(String login, String password, String gameId, Map<String, Object> params) throws BotManagerException {
+		BotRunnerBuilderFactory botFacto = BotRunnerBuilderFactory.valueOf(gameId);
 		if (botFacto == null) {
 			throw new NoBotForThisGameException(gameId);
 		}
-		try {
-			BotRunnersManager.INSTANCE.startBot(login, password, botFacto);
-		} catch (BotRunnerException e) {
-			throw new BotManagerException(e.getMessage());
-		}
+		BotRunnersManager.INSTANCE.createBot(login, password, params, botFacto);
 	}
 
 	@Override
@@ -59,7 +58,22 @@ public class BotServiceImpl implements BotService {
 			throw new BotManagerException(e.getMessage());
 		}
 	}
+	
+	@Override
+	public void startBot(Long id) throws BotManagerException {
+		try {
+			BotRunnersManager.INSTANCE.startBot(id);
+		} catch (BotRunnerException e) {
+			throw new BotManagerException(e.getMessage());
+		}
+	}
 
+	@Override
+	public BotInfosDTO getBotInfos(Long id) throws BotManagerException {
+		RunnerInfos ri = BotRunnersManager.INSTANCE.getRunnerInfos(id);
+		return new BotInfosDTO(ri.getId(), ri.getLogin(), ri.getBotRunner().getState().toString());
+	}
+	
 	@Override
 	public GameInfosListDTO getAllBotInfos() throws BotManagerException {
 		List<GameInfosDTO> gameInfosList = new ArrayList<>();
@@ -87,29 +101,28 @@ public class BotServiceImpl implements BotService {
 	}
 
 	@Override
-	public BotMethodsDTO getMethods(Long id) throws BotManagerException {
-
-		RunnerInfos infos = BotRunnersManager.INSTANCE.getRunnerInfos(id);
-
+	public BotMethodsDTO getMethods(String gameId, Long botId) throws BotManagerException {
+		BotRunner runner = BotRunnersManager.INSTANCE.getRunnerInfos(botId).getBotRunner();
+		List<? extends IBotMethod<?, ?>> botMethods = BotRunnerBuilderFactory.valueOf(gameId).getBotRunnerBuilder().getBotMethods();
 		List<BotMethodDTO> methods = new ArrayList<>();
-		for (AbstractBotMethod<?, ?> botMethod : infos.getBotRunner().getBot().getBotMethods()) {
-			Long methodId = botMethod.getId();
+		for (IBotMethod<?, ?> botMethod : botMethods) {
+			String methodId = botMethod.getId();
 			String label = botMethod.getLabel();
-			Map<String, Object> params = botMethod.getneededParameters();
+			Map<String, Object> params = botMethod.getProcessor().getNeededParameters(runner);
 			methods.add(new BotMethodDTO(methodId, label, params));
 		}
 		return new BotMethodsDTO(methods);
 	}
 
 	@Override
-	public Object callMethod(Long idBot, Long idMethod, Map<String, Object> params) throws BotManagerException {
-		RunnerInfos infos = BotRunnersManager.INSTANCE.getRunnerInfos(idBot);
-		AbstractBotMethod<?, ?> method = infos.getBotRunner().getBot().getBotMethodById(idMethod);
+	public Object callMethod(String gameId, String idMethod, Long botId, Map<String, Object> params) throws BotManagerException {
+		BotRunner runner = BotRunnersManager.INSTANCE.getRunnerInfos(botId).getBotRunner();
+		IBotMethod<?, ?> method = BotRunnerBuilderFactory.valueOf(gameId).getBotRunnerBuilder().getBotMethodById(idMethod);
 		if (method == null) {
 			throw new NoBotMethodForThisIdException(idMethod);
 		}
 		try {
-			return method.process(infos.getBotRunner(), params);
+			return runner.callBotMethod(method, params);
 		} catch (Exception e) {
 			throw new BotManagerException(e.getMessage());
 		}
@@ -126,8 +139,26 @@ public class BotServiceImpl implements BotService {
 
 	@Override
 	public ClassPathResource getIcon(String gameId) throws BotManagerException {
-		BotFactory bf = BotFactory.valueOf(gameId);
-		return new ClassPathResource("image/" + bf.getIconFileName());
+		BotRunnerBuilderFactory botFacto = BotRunnerBuilderFactory.valueOf(gameId);
+		if (botFacto == null) {
+			throw new NoBotForThisGameException(gameId);
+		}
+		return new ClassPathResource("image/" + botFacto.getIconFileName());
+	}
+
+	@Override
+	public BotPropertiesDTO getProperties(String gameId) throws BotManagerException {
+		BotRunnerBuilderFactory botFacto = BotRunnerBuilderFactory.valueOf(gameId);
+		if (botFacto == null) {
+			throw new NoBotForThisGameException(gameId);
+		}
+		return new BotPropertiesDTO(botFacto.getBotRunnerBuilder().getPropertiesBuilders().stream()
+				.map(builder -> new BotPropertyDTO(builder.getKey(), 
+						builder.getDescriptor().getDescription(), 
+						builder.getDescriptor().isNeeded(),
+						builder.getDescriptor().isNullable(),
+						builder.getDefaultValue()))
+				.collect(Collectors.toList()));
 	}
 
 }
