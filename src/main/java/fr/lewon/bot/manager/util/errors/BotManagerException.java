@@ -7,5 +7,9 @@ public class BotManagerException extends Exception {
 	public BotManagerException(String message) {
 		super(message);
 	}
+	
+	public BotManagerException(Exception cause) {
+		super(cause);
+	}
 
 }
