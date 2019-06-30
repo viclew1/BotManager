@@ -97,7 +97,11 @@ public class BotServiceImpl implements BotService {
 
 	@Override
 	public void trimStoppedBots() throws BotManagerException {
-		BotRunnersManager.INSTANCE.trimStoppedBots();
+		try {
+			BotRunnersManager.INSTANCE.trimStoppedBots();
+		} catch (BotRunnerException e) {
+			throw new BotManagerException(e);
+		}
 	}
 
 	@Override

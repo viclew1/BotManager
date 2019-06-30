@@ -76,12 +76,14 @@ public enum BotRunnersManager {
 				.orElseThrow(() -> new NoBotForThisGameException(gameId));
 	}
 
-	public void trimStoppedBots() {
-		gameInfos.stream()
-		.map(GameInfos::getRunnerInfos)
-		.forEach(ri -> ri.removeAll(ri.stream()
-				.filter(r -> r.getBotRunner().getState() == BotState.STOPPED)
-				.collect(Collectors.toList())));
+	public void trimStoppedBots() throws BotManagerException, BotRunnerException {
+		for (GameInfos gi : gameInfos) {
+			for (RunnerInfos ri : gi.getRunnerInfos()) {
+				if (ri.getBotRunner().getState() == BotState.STOPPED) {
+					trimStoppedBot(gi.getId(), ri.getId());
+				}
+			}
+		}
 	}
 
 	public void trimStoppedBot(String gameId, Long id) throws BotManagerException, BotRunnerException {
@@ -90,6 +92,7 @@ public enum BotRunnersManager {
 		if (runnerInfos.getBotRunner().getState() != BotState.STOPPED) {
 			throw new WrongStateRunnerException("Trim", runnerInfos.getBotRunner().getState(), BotState.STOPPED);
 		}
+		runnerInfos.getBotRunner().resetBot();
 		gameInfos.getRunnerInfos().remove(runnerInfos);
 	}
 
