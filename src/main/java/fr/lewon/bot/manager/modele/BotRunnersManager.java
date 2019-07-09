@@ -92,7 +92,7 @@ public enum BotRunnersManager {
 		if (runnerInfos.getBotRunner().getState() != BotState.STOPPED) {
 			throw new WrongStateRunnerException("Trim", runnerInfos.getBotRunner().getState(), BotState.STOPPED);
 		}
-		runnerInfos.getBotRunner().resetBot();
+		runnerInfos.getBotRunner().kill();
 		gameInfos.getRunnerInfos().remove(runnerInfos);
 	}
 
