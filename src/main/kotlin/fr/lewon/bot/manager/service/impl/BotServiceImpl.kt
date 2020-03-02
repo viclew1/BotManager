@@ -1,7 +1,10 @@
 package fr.lewon.bot.manager.service.impl
 
 import fr.lewon.bot.manager.entities.*
+import fr.lewon.bot.manager.mappers.BotInfoMapper
 import fr.lewon.bot.manager.mappers.BotOperationMapper
+import fr.lewon.bot.manager.mappers.BotPropertyMapper
+import fr.lewon.bot.manager.mappers.GameInfoMapper
 import fr.lewon.bot.manager.modele.repo.BotRepository
 import fr.lewon.bot.manager.modele.repo.GameRepository
 import fr.lewon.bot.manager.service.BotService
@@ -20,13 +23,21 @@ class BotServiceImpl : BotService {
     private lateinit var gameRepository: GameRepository
     @Autowired
     private lateinit var botRepository: BotRepository
+
     @Autowired
     private lateinit var botOperationMapper: BotOperationMapper
+    @Autowired
+    private lateinit var botPropertyMapper: BotPropertyMapper
+    @Autowired
+    private lateinit var gameInfoMapper: GameInfoMapper
+    @Autowired
+    private lateinit var botInfoMapper: BotInfoMapper
+
     @Autowired
     private lateinit var botOperationRunner: BotOperationRunner
 
     override fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>) {
-        val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId = gameId.toString())
+        val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
         game.botsByLogin[login]?.let {
             throw AlreadyRunningBotException(it.game.name, login)
         }
@@ -45,7 +56,7 @@ class BotServiceImpl : BotService {
     }
 
     override fun getAllBotInfo(): GameInfoListDTO {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return GameInfoListDTO(gameInfoMapper.gamesToDto(gameRepository.values.toList()))
     }
 
     override fun trimStoppedBots() {
@@ -66,7 +77,7 @@ class BotServiceImpl : BotService {
     override fun getBotOperations(id: Long): BotOperationsDTO {
         val bot = botRepository[id] ?: throw NoBotFoundException(id)
         val botOperations = bot.game.botOperationsById.values.toList()
-        return BotOperationsDTO(botOperationMapper.botOperationToDto(botOperations, bot.bot))
+        return BotOperationsDTO(botOperationMapper.botOperationsToDto(botOperations, bot.bot))
     }
 
     override fun callBotOperation(operationId: Long, botId: Long, params: Map<String, String?>): OperationResult {
@@ -77,19 +88,16 @@ class BotServiceImpl : BotService {
     }
 
     override fun getIcon(gameId: Long): ClassPathResource {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return gameRepository[gameId]?.iconClassPathResource ?: throw NoBotForThisGameException(gameId)
     }
 
     override fun getGameProperties(gameId: Long): BotPropertiesDescriptorsDTO {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getBotProperties(id: Long): BotPropertiesDescriptorsDTO {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
+        return BotPropertiesDescriptorsDTO(botPropertyMapper.botPropertiesToDto(game.abstractBotBuilder.botPropertyDescriptors))
     }
 
     override fun getBotInfo(id: Long): BotInfoDTO {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return botInfoMapper.botToDto(botRepository[id] ?: throw NoBotFoundException(id))
     }
 
 }

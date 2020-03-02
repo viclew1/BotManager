@@ -28,7 +28,7 @@ interface BotService {
     fun getBotLogs(id: Long): BotLogsDTO
 
     @Throws(BotManagerException::class)
-    fun getBotOperations(botId: Long): BotOperationsDTO
+    fun getBotOperations(id: Long): BotOperationsDTO
 
     @Throws(BotManagerException::class)
     fun callBotOperation(operationId: Long, botId: Long, params: Map<String, String?>): OperationResult
@@ -38,9 +38,6 @@ interface BotService {
 
     @Throws(BotManagerException::class)
     fun getGameProperties(gameId: Long): BotPropertiesDescriptorsDTO
-
-    @Throws(BotManagerException::class)
-    fun getBotProperties(id: Long): BotPropertiesDescriptorsDTO
 
     @Throws(BotManagerException::class)
     fun getBotInfo(id: Long): BotInfoDTO

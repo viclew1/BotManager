@@ -4,7 +4,7 @@ import fr.lewon.bot.runner.Bot
 import java.util.concurrent.atomic.AtomicLong
 
 class BotEntity(
-        var login: String,
+        val login: String,
         val bot: Bot,
         val game: GameEntity
 ) {

@@ -16,19 +16,20 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 @RequestMapping("/bots")
 open class BotController {
+
     @Autowired
     private lateinit var botService: BotService
 
     @GetMapping(produces = ["application/json"], value = ["/all"])
     @Throws(BotManagerException::class)
-    fun getAllBotInfos(): ResponseEntity<GameInfoListDTO> {
+    fun getAllBotInfo(): ResponseEntity<GameInfoListDTO> {
         val info = botService.getAllBotInfo()
         return ResponseEntity(info, HttpStatus.OK)
     }
 
     @GetMapping(produces = ["application/json"], value = ["/{gameId}/bot/{id}"])
     @Throws(BotManagerException::class)
-    fun getBotInfos(@PathVariable id: Long): ResponseEntity<BotInfoDTO> {
+    fun getBotInfo(@PathVariable id: Long): ResponseEntity<BotInfoDTO> {
         val info = botService.getBotInfo(id)
         return ResponseEntity(info, HttpStatus.OK)
     }
@@ -85,14 +86,14 @@ open class BotController {
     @PostMapping(produces = ["application/json"], consumes = ["application/json"], value = ["/{gameId}/bot/{botId}/methods/call"])
     @Throws(BotManagerException::class)
     fun callBotOperation(@PathVariable id: Long, @RequestBody callBotOperationDTO: CallBotOperationDTO): ResponseEntity<OperationResult> {
-        val result = botService.callBotOperation(callBotOperationDTO.id, id, callBotOperationDTO.params)
+        val result = botService.callBotOperation(callBotOperationDTO.operationId, id, callBotOperationDTO.params)
         return ResponseEntity(result, HttpStatus.OK)
     }
 
     @GetMapping(produces = ["application/json"], value = ["/{gameId}/properties"])
     @Throws(BotManagerException::class)
     fun getParams(@PathVariable gameId: Long): ResponseEntity<BotPropertiesDescriptorsDTO> {
-        val props = botService.getBotProperties(gameId)
+        val props = botService.getGameProperties(gameId)
         return ResponseEntity(props, HttpStatus.OK)
     }
 
