@@ -76,7 +76,7 @@ open class BotController {
         return ResponseEntity(logs, HttpStatus.OK)
     }
 
-    @GetMapping(produces = ["application/json"], value = ["/bot/{botId}/methods"])
+    @GetMapping(produces = ["application/json"], value = ["/bot/{botId}/operations"])
     @Throws(BotManagerException::class)
     fun getBotOperations(@PathVariable botId: Long): ResponseEntity<BotOperationsDTO> {
         val methods = botService.getBotOperations(botId)
@@ -85,8 +85,8 @@ open class BotController {
 
     @PostMapping(produces = ["application/json"], consumes = ["application/json"], value = ["/bot/{botId}/operation/call"])
     @Throws(BotManagerException::class)
-    fun callBotOperation(@PathVariable id: Long, @RequestBody callBotOperationDTO: CallBotOperationDTO): ResponseEntity<OperationResult> {
-        val result = botService.callBotOperation(callBotOperationDTO.operationId, id, callBotOperationDTO.params)
+    fun callBotOperation(@PathVariable botId: Long, @RequestBody callBotOperationDTO: CallBotOperationDTO): ResponseEntity<OperationResult> {
+        val result = botService.callBotOperation(callBotOperationDTO.operationId, botId, callBotOperationDTO.params)
         return ResponseEntity(result, HttpStatus.OK)
     }
 

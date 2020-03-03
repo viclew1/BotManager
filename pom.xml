@@ -11,6 +11,8 @@
         <kotlin.version>1.3.61</kotlin.version>
         <maven.compiler.source>12</maven.compiler.source>
         <maven.compiler.target>12</maven.compiler.target>
+        <maven.compiler.release>12</maven.compiler.release>
+        <kotlin.compiler.jvmTarget>12</kotlin.compiler.jvmTarget>
         <start-class>fr.lewon.bot.manager.BotManagerApp</start-class>
     </properties>
 
