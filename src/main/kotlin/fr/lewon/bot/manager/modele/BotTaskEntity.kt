@@ -6,9 +6,9 @@ import java.util.concurrent.atomic.AtomicLong
 
 class BotTaskEntity(
         val botTask: BotTask,
-        val bot: Bot
+        val bot: Bot,
+        val name: String
 ) {
-
     val id: Long = ID_GEN.incrementAndGet()
 
     companion object {

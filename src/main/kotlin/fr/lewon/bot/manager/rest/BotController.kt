@@ -27,7 +27,7 @@ open class BotController {
         return ResponseEntity(info, HttpStatus.OK)
     }
 
-    @GetMapping(produces = ["application/json"], value = ["/{gameId}/bot/{id}"])
+    @GetMapping(produces = ["application/json"], value = ["/bot/{id}"])
     @Throws(BotManagerException::class)
     fun getBotInfo(@PathVariable id: Long): ResponseEntity<BotInfoDTO> {
         val info = botService.getBotInfo(id)
@@ -36,26 +36,26 @@ open class BotController {
 
     @PostMapping(produces = ["application/json"], consumes = ["application/json"], value = ["/{gameId}/create"])
     @Throws(BotManagerException::class)
-    fun createBot(@PathVariable gameId: Long, @RequestBody info: UserInfoDTO): ResponseEntity<Nothing> {
-        botService.createBot(info.login, info.password, gameId, info.params)
-        return ResponseEntity(HttpStatus.OK)
+    fun createBot(@PathVariable gameId: Long, @RequestBody info: UserInfoDTO): ResponseEntity<BotInfoDTO> {
+        var botInfo = botService.createBot(info.login, info.password, gameId, info.params)
+        return ResponseEntity(botInfo, HttpStatus.OK)
     }
 
-    @PostMapping(produces = ["application/json"], value = ["/{gameId}/bot/{id}/stop"])
+    @PostMapping(produces = ["application/json"], value = ["/bot/{id}/stop"])
     @Throws(BotManagerException::class)
     fun stopBot(@PathVariable id: Long): ResponseEntity<Nothing> {
         botService.stopBot(id)
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PostMapping(produces = ["application/json"], value = ["/{gameId}/bot/{id}/start"])
+    @PostMapping(produces = ["application/json"], value = ["/bot/{id}/start"])
     @Throws(BotManagerException::class)
     fun startBot(@PathVariable id: Long): ResponseEntity<Nothing> {
         botService.startBot(id)
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PostMapping(produces = ["application/json"], value = ["/{gameId}/bot/{id}/trim"])
+    @PostMapping(produces = ["application/json"], value = ["/bot/{id}/trim"])
     @Throws(BotManagerException::class)
     fun trimStoppedBot(@PathVariable id: Long): ResponseEntity<Nothing> {
         botService.trimStoppedBot(id)
@@ -69,21 +69,21 @@ open class BotController {
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping(produces = ["application/json"], value = ["/{gameId}/bot/{id}/logs"])
+    @GetMapping(produces = ["application/json"], value = ["/bot/{id}/logs"])
     @Throws(BotManagerException::class)
     fun getLogs(@PathVariable id: Long): ResponseEntity<BotLogsDTO> {
         val logs = botService.getBotLogs(id)
         return ResponseEntity(logs, HttpStatus.OK)
     }
 
-    @GetMapping(produces = ["application/json"], value = ["/{gameId}/bot/{botId}/methods"])
+    @GetMapping(produces = ["application/json"], value = ["/bot/{botId}/methods"])
     @Throws(BotManagerException::class)
     fun getBotOperations(@PathVariable botId: Long): ResponseEntity<BotOperationsDTO> {
         val methods = botService.getBotOperations(botId)
         return ResponseEntity(methods, HttpStatus.OK)
     }
 
-    @PostMapping(produces = ["application/json"], consumes = ["application/json"], value = ["/{gameId}/bot/{botId}/methods/call"])
+    @PostMapping(produces = ["application/json"], consumes = ["application/json"], value = ["/bot/{botId}/operation/call"])
     @Throws(BotManagerException::class)
     fun callBotOperation(@PathVariable id: Long, @RequestBody callBotOperationDTO: CallBotOperationDTO): ResponseEntity<OperationResult> {
         val result = botService.callBotOperation(callBotOperationDTO.operationId, id, callBotOperationDTO.params)

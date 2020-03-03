@@ -7,7 +7,7 @@ import org.springframework.core.io.ClassPathResource
 
 interface BotService {
     @Throws(BotManagerException::class)
-    fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>)
+    fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>): BotInfoDTO
 
     @Throws(BotManagerException::class)
     fun stopBot(id: Long)

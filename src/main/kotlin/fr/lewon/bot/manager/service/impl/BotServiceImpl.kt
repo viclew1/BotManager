@@ -36,13 +36,14 @@ class BotServiceImpl : BotService {
     @Autowired
     private lateinit var botOperationRunner: BotOperationRunner
 
-    override fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>) {
+    override fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>): BotInfoDTO {
         val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
         game.botsByLogin[login]?.let {
             throw AlreadyRunningBotException(it.game.name, login)
         }
         val bot = game.abstractBotBuilder.buildBot(login, password, params)
-        botRepository.addBot(bot, login, game)
+        val createdEntity = botRepository.addBot(bot, login, game)
+        return botInfoMapper.botToDto(createdEntity)
     }
 
     override fun stopBot(id: Long) {
@@ -60,7 +61,13 @@ class BotServiceImpl : BotService {
     }
 
     override fun trimStoppedBots() {
-        botRepository.entries.removeIf { e -> e.value.bot.state == BotState.STOPPED }
+        var toTrim = botRepository.values
+                .filter { b -> b.bot.state == BotState.STOPPED }
+                .toList()
+        botRepository.values.removeAll(toTrim)
+        gameRepository.values.forEach { g ->
+            g.botsByLogin.values.removeAll(toTrim)
+        }
     }
 
     override fun trimStoppedBot(id: Long) {

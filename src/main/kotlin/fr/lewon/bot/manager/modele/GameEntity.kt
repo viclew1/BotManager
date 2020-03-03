@@ -11,7 +11,6 @@ class GameEntity(
         val botOperationsById: Map<Long, BotOperationEntity> = emptyMap(),
         val iconClassPathResource: ClassPathResource
 ) {
-
     val id: Long = ID_GEN.incrementAndGet()
 
     companion object {

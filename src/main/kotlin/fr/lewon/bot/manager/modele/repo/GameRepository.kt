@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component
 class GameRepository : HashMap<Long, GameEntity>() {
 
     fun addGame(name: String, abstractBotBuilder: AbstractBotBuilder, iconPath: String): GameEntity {
-        var cpt: Long = 1
         val ge = GameEntity(
                 name,
                 abstractBotBuilder,
                 HashMap(),
                 abstractBotBuilder.botOperations
                         .map { b -> BotOperationEntity(b, b.label) }
-                        .map { cpt++ to it }.toMap(),
+                        .map { it.id to it }
+                        .toMap(),
                 ClassPathResource(iconPath))
         this[ge.id] = ge
         return ge

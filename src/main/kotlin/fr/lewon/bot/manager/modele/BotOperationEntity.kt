@@ -7,7 +7,6 @@ class BotOperationEntity(
         val botOperation: BotOperation,
         val label: String
 ) {
-
     val id: Long = ID_GEN.incrementAndGet()
 
     companion object {
