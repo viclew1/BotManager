@@ -41,17 +41,10 @@ open class BotController {
         return ResponseEntity(botInfo, HttpStatus.OK)
     }
 
-    @PostMapping(produces = ["application/json"], value = ["/bot/{id}/stop"])
+    @PostMapping(produces = ["application/json"], value = ["/bot/{id}/transition/{transition}"])
     @Throws(BotManagerException::class)
-    fun stopBot(@PathVariable id: Long): ResponseEntity<Nothing> {
-        botService.stopBot(id)
-        return ResponseEntity(HttpStatus.OK)
-    }
-
-    @PostMapping(produces = ["application/json"], value = ["/bot/{id}/start"])
-    @Throws(BotManagerException::class)
-    fun startBot(@PathVariable id: Long): ResponseEntity<Nothing> {
-        botService.startBot(id)
+    fun processBotTransition(@PathVariable transition: String, @PathVariable id: Long): ResponseEntity<Nothing> {
+        botService.processBotTransition(transition, id)
         return ResponseEntity(HttpStatus.OK)
     }
 

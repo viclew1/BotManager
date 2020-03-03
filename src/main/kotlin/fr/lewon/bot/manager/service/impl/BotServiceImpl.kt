@@ -10,6 +10,7 @@ import fr.lewon.bot.manager.modele.repo.GameRepository
 import fr.lewon.bot.manager.service.BotService
 import fr.lewon.bot.manager.util.errors.*
 import fr.lewon.bot.runner.bot.operation.OperationResult
+import fr.lewon.bot.runner.lifecycle.bot.BotLifeCycleOperation
 import fr.lewon.bot.runner.lifecycle.bot.BotState
 import fr.lewon.bot.runner.util.BotOperationRunner
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,14 +47,12 @@ class BotServiceImpl : BotService {
         return botInfoMapper.botToDto(createdEntity)
     }
 
-    override fun stopBot(id: Long) {
+    override fun processBotTransition(transition: String, id: Long) {
         val bot = botRepository[id] ?: throw NoBotFoundException(id)
-        bot.bot.stop()
-    }
-
-    override fun startBot(id: Long) {
-        val bot = botRepository[id] ?: throw NoBotFoundException(id)
-        bot.bot.start()
+        BotLifeCycleOperation.values()
+                .firstOrNull { it.name.equals(transition, true) }
+                ?.run(bot.bot)
+                ?: throw InvalidTransitionNameException(transition)
     }
 
     override fun getAllBotInfo(): GameInfoListDTO {

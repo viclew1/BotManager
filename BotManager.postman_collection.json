@@ -135,7 +135,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"login\":\"abc\",\n\t\"password\":\"def\"\n}",
+					"raw": "{\n\t\"login\":\"secejik288@smlmail.net\",\n\t\"password\":\"167943\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -162,7 +162,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/bots/bot/1/stop",
+					"raw": "{{url}}/bots/bot/1/transition/stop",
 					"host": [
 						"{{url}}"
 					],
@@ -170,6 +170,7 @@
 						"bots",
 						"bot",
 						"1",
+						"transition",
 						"stop"
 					]
 				}
@@ -182,7 +183,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/bots/bot/1/start",
+					"raw": "{{url}}/bots/bot/1/transition/start",
 					"host": [
 						"{{url}}"
 					],
@@ -190,6 +191,7 @@
 						"bots",
 						"bot",
 						"1",
+						"transition",
 						"start"
 					]
 				}

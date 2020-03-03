@@ -10,10 +10,7 @@ interface BotService {
     fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>): BotInfoDTO
 
     @Throws(BotManagerException::class)
-    fun stopBot(id: Long)
-
-    @Throws(BotManagerException::class)
-    fun startBot(id: Long)
+    fun processBotTransition(transition: String, id: Long)
 
     @Throws(BotManagerException::class)
     fun getAllBotInfo(): GameInfoListDTO
