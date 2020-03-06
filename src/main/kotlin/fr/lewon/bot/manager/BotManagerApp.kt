@@ -5,11 +5,11 @@ import fr.lewon.bot.hh.HHBotBuilder
 import fr.lewon.bot.manager.modele.repo.GameRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
 @SpringBootApplication(scanBasePackages = ["fr.lewon.bot.runner", "fr.lewon.bot.manager"])
-open class BotManagerApp : CommandLineRunner {
+class BotManagerApp : CommandLineRunner {
 
     @Autowired
     private lateinit var gameRepository: GameRepository
@@ -19,8 +19,9 @@ open class BotManagerApp : CommandLineRunner {
         gameRepository.addGame("Leek Wars", LWBotBuilder(), "image/leekwars.png")
         gameRepository.addGame("SmutStone", HHBotBuilder(), "image/smutstone.jpg")
     }
+
 }
 
 fun main(args: Array<String>) {
-    SpringApplication.run(BotManagerApp::class.java, *args)
+    runApplication<BotManagerApp>(*args)
 }
