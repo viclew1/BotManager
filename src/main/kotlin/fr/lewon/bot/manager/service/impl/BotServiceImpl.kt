@@ -10,6 +10,9 @@ import fr.lewon.bot.manager.modele.repo.GameRepository
 import fr.lewon.bot.manager.service.BotService
 import fr.lewon.bot.manager.util.errors.*
 import fr.lewon.bot.runner.bot.operation.OperationResult
+import fr.lewon.bot.runner.bot.operation.def.ReadBotPropertiesOperation
+import fr.lewon.bot.runner.bot.operation.def.UpdateBotPropertiesOperation
+import fr.lewon.bot.runner.errors.BotOperationExecutionException
 import fr.lewon.bot.runner.lifecycle.bot.BotLifeCycleOperation
 import fr.lewon.bot.runner.lifecycle.bot.BotState
 import fr.lewon.bot.runner.util.BotOperationRunner
@@ -60,7 +63,7 @@ class BotServiceImpl : BotService {
     }
 
     override fun trimStoppedBots() {
-        var toTrim = botRepository.values
+        val toTrim = botRepository.values
                 .filter { b -> b.bot.state == BotState.STOPPED }
                 .toList()
         botRepository.values.removeAll(toTrim)
@@ -100,6 +103,28 @@ class BotServiceImpl : BotService {
     override fun getGameProperties(gameId: Long): BotPropertiesDescriptorsDTO {
         val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
         return BotPropertiesDescriptorsDTO(botPropertyMapper.botPropertiesToDto(game.abstractBotBuilder.botPropertyDescriptors))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun getBotProperties(botId: Long): Map<String, Any?> {
+        val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
+        val readOperation = ReadBotPropertiesOperation()
+        val operationResult = botOperationRunner.runOperation(readOperation, bot.bot, HashMap())
+        if (!operationResult.isSuccess) {
+            throw BotOperationExecutionException(readOperation, operationResult.message)
+        }
+        return operationResult.content as Map<String, Any?>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun updateBotProperties(botId: Long, properties: Map<String, String?>): Map<String, Any?> {
+        val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
+        val updateOperation = UpdateBotPropertiesOperation()
+        val operationResult = botOperationRunner.runOperation(updateOperation, bot.bot, properties)
+        if (!operationResult.isSuccess) {
+            throw BotOperationExecutionException(updateOperation, operationResult.message)
+        }
+        return operationResult.content as Map<String, Any?>
     }
 
     override fun getBotInfo(id: Long): BotInfoDTO {

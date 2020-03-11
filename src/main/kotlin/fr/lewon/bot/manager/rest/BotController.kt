@@ -85,9 +85,23 @@ open class BotController {
 
     @GetMapping(produces = ["application/json"], value = ["/{gameId}/properties"])
     @Throws(BotManagerException::class)
-    fun getParams(@PathVariable gameId: Long): ResponseEntity<BotPropertiesDescriptorsDTO> {
+    fun getGameProperties(@PathVariable gameId: Long): ResponseEntity<BotPropertiesDescriptorsDTO> {
         val props = botService.getGameProperties(gameId)
         return ResponseEntity(props, HttpStatus.OK)
+    }
+
+    @GetMapping(produces = ["application/json"], value = ["/bot/{botId}/properties"])
+    @Throws(BotManagerException::class)
+    fun getBotProperties(@PathVariable botId: Long): ResponseEntity<Map<String, Any?>> {
+        val properties = botService.getBotProperties(botId)
+        return ResponseEntity(properties, HttpStatus.OK)
+    }
+
+    @PostMapping(produces = ["application/json"], value = ["/bot/{botId}/properties"])
+    @Throws(BotManagerException::class)
+    fun updateBotProperties(@PathVariable botId: Long, @RequestBody properties: Map<String, String?>): ResponseEntity<Map<String, Any?>> {
+        val newProperties = botService.updateBotProperties(botId, properties)
+        return ResponseEntity(newProperties, HttpStatus.OK)
     }
 
     @GetMapping(produces = [MediaType.IMAGE_JPEG_VALUE], value = ["/{gameId}/icons"])
