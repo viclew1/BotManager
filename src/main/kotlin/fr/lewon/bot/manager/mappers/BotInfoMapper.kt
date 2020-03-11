@@ -13,6 +13,7 @@ interface BotInfoMapper {
 
     @Mappings(
             Mapping(source = "bot.state", target = "state"),
+            Mapping(source = "bot.game.id", target = "gameId"),
             Mapping(source = "bot.state.operations ", target = "availableTransitions")
     )
     fun botToDto(bot: BotEntity): BotInfoDTO
