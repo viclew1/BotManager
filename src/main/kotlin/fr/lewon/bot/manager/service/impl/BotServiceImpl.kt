@@ -1,15 +1,11 @@
 package fr.lewon.bot.manager.service.impl
 
 import fr.lewon.bot.manager.entities.*
-import fr.lewon.bot.manager.mappers.BotInfoMapper
-import fr.lewon.bot.manager.mappers.BotOperationMapper
-import fr.lewon.bot.manager.mappers.BotPropertyMapper
-import fr.lewon.bot.manager.mappers.GameInfoMapper
+import fr.lewon.bot.manager.mappers.*
 import fr.lewon.bot.manager.modele.repo.BotRepository
 import fr.lewon.bot.manager.modele.repo.GameRepository
 import fr.lewon.bot.manager.service.BotService
 import fr.lewon.bot.manager.util.errors.*
-import fr.lewon.bot.runner.bot.operation.OperationResult
 import fr.lewon.bot.runner.bot.operation.def.ReadBotPropertiesOperation
 import fr.lewon.bot.runner.bot.operation.def.UpdateBotPropertiesOperation
 import fr.lewon.bot.runner.errors.BotOperationExecutionException
@@ -36,6 +32,12 @@ class BotServiceImpl : BotService {
     private lateinit var gameInfoMapper: GameInfoMapper
     @Autowired
     private lateinit var botInfoMapper: BotInfoMapper
+    @Autowired
+    private lateinit var operationResultMapper: OperationResultMapper
+    @Autowired
+    private lateinit var botLogsMapper: BotLogsMapper
+    @Autowired
+    private lateinit var botTaskMapper: BotTaskMapper
 
     @Autowired
     private lateinit var botOperationRunner: BotOperationRunner
@@ -78,9 +80,9 @@ class BotServiceImpl : BotService {
         botRepository.remove(id)
     }
 
-    override fun getBotLogs(id: Long): BotLogsDTO {
+    override fun getBotLogs(id: Long): List<BotLogDTO> {
         val bot = botRepository[id] ?: throw NoBotFoundException(id)
-        return BotLogsDTO(bot.bot.logger.getLogs())
+        return botLogsMapper.logsToDTO(bot.bot.logger.getLogs())
     }
 
     override fun getBotOperations(id: Long): BotOperationsDTO {
@@ -89,11 +91,11 @@ class BotServiceImpl : BotService {
         return BotOperationsDTO(botOperationMapper.botOperationsToDto(botOperations, bot.bot))
     }
 
-    override fun callBotOperation(operationId: Long, botId: Long, params: Map<String, String?>): OperationResult {
+    override fun callBotOperation(operationId: Long, botId: Long, params: Map<String, String?>): OperationResultDTO {
         val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
         val botOperation = bot.game.botOperationsById[operationId]
                 ?: throw NoBotMethodForThisIdException(bot.game.name, operationId)
-        return botOperationRunner.runOperation(botOperation.botOperation, bot.bot, params)
+        return operationResultMapper.operationToDTO(botOperationRunner.runOperation(botOperation.botOperation, bot.bot, params))
     }
 
     override fun getIcon(gameId: Long): ClassPathResource {
@@ -129,6 +131,11 @@ class BotServiceImpl : BotService {
 
     override fun getBotInfo(id: Long): BotInfoDTO {
         return botInfoMapper.botToDto(botRepository[id] ?: throw NoBotFoundException(id))
+    }
+
+    override fun getBotTasks(botId: Long): BotTasksDTO {
+        val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
+        return BotTasksDTO(System.currentTimeMillis(), botTaskMapper.tasksToDto(bot.bot.getTasks()))
     }
 
 }

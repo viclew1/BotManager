@@ -1,16 +1,19 @@
 package fr.lewon.bot.manager.mappers
 
 import fr.lewon.bot.manager.entities.BotTaskDTO
-import fr.lewon.bot.manager.modele.BotTaskEntity
+import fr.lewon.bot.runner.bot.task.BotTask
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 
 @Mapper(componentModel = "spring")
 interface BotTaskMapper {
 
-    fun tasksToDto(tasks: List<BotTaskEntity>): List<BotTaskDTO>
+    fun tasksToDto(tasks: Collection<BotTask>): List<BotTaskDTO>
 
-    @Mapping(target = "state", source = "botTask.state")
-    fun taskToDto(task: BotTaskEntity): BotTaskDTO
+    @Mappings(
+            Mapping(target = "state", source = "state"),
+            Mapping(target = "executionTime", source = "executionDate.time"))
+    fun taskToDto(task: BotTask): BotTaskDTO
 
 }

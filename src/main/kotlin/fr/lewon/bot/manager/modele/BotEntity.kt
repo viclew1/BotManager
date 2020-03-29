@@ -6,8 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
 class BotEntity(
         val login: String,
         val bot: Bot,
-        val game: GameEntity,
-        val tasksById: Map<Long, BotTaskEntity> = emptyMap()
+        val game: GameEntity
 ) {
     val id: Long = ID_GEN.incrementAndGet()
 
