@@ -1,0 +1,258 @@
+{
+	"info": {
+		"_postman_id": "9b347dad-e149-41c3-9fdd-29e02f199ee4",
+		"name": "BotManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all infos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get bot info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/bot/1/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"bot",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get bot operations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/bot/1/operations",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"bot",
+						"1",
+						"operations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get game properties",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/1/properties",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"1",
+						"properties"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get icon",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/1/icons",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"1",
+						"icons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/bot/1/logs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"bot",
+						"1",
+						"logs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create bot",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"login\":\"secejik288@smlmail.net\",\n\t\"password\":\"167943\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/bots/1/create",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"1",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop bot",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/bot/1/transition/stop",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"bot",
+						"1",
+						"transition",
+						"stop"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start bot",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/bot/1/transition/start",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"bot",
+						"1",
+						"transition",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Call bot operation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"operation_id\":1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/bots/bot/1/operation/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"bot",
+						"1",
+						"operation",
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trim bots",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/bots/trim",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"bots",
+						"trim"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
