@@ -17,7 +17,7 @@ class BotManagerApp : CommandLineRunner {
     override fun run(vararg args: String?) {
         gameRepository.addGame("Hentai Heroes", HHBotBuilder(), "image/hentaiheroes.jpg")
         gameRepository.addGame("Leek Wars", LWBotBuilder(), "image/leekwars.png")
-        gameRepository.addGame("SmutStone", HHBotBuilder(), "image/smutstone.jpg")
+//        gameRepository.addGame("SmutStone", HHBotBuilder(), "image/smutstone.jpg")
     }
 
 }
