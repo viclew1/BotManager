@@ -54,6 +54,11 @@
             <artifactId>LWBot</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>lewon.bot</groupId>
+            <artifactId>StocksBot</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
 
         <!-- KOTLIN -->
