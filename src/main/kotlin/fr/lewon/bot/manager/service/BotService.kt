@@ -5,7 +5,7 @@ import org.springframework.core.io.ClassPathResource
 
 interface BotService {
 
-    fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>): BotInfoDTO
+    fun createBot(login: String, loginProperties: Map<String, String>, gameId: Long, params: Map<String, String?>): BotInfoDTO
 
     fun processBotTransition(transition: String, id: Long)
 
@@ -25,6 +25,8 @@ interface BotService {
 
     fun getGameProperties(gameId: Long): BotPropertiesDescriptorsDTO
 
+    fun getLoginProperties(gameId: Long): BotPropertiesDescriptorsDTO
+
     fun getBotProperties(botId: Long): Map<String, Any?>
 
     fun updateBotProperties(botId: Long, properties: Map<String, String?>): Map<String, Any?>
@@ -32,4 +34,5 @@ interface BotService {
     fun getBotInfo(id: Long): BotInfoDTO
 
     fun getBotTasks(botId: Long): BotTasksDTO
+
 }

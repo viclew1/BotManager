@@ -43,7 +43,7 @@ open class BotController {
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE], consumes = [MediaType.APPLICATION_JSON_VALUE], value = ["/{gameId}/create"])
     @Throws(BotManagerException::class)
     fun createBot(@PathVariable gameId: Long, @RequestBody info: UserInfoDTO): ResponseEntity<BotInfoDTO> {
-        val botInfo = botService.createBot(info.login, info.password, gameId, info.params)
+        val botInfo = botService.createBot(info.login, info.loginProperties, gameId, info.params)
         return ResponseEntity(botInfo, HttpStatus.OK)
     }
 
@@ -93,6 +93,13 @@ open class BotController {
     fun getGameProperties(@PathVariable gameId: Long): ResponseEntity<BotPropertiesDescriptorsDTO> {
         val props = botService.getGameProperties(gameId)
         return ResponseEntity(props, HttpStatus.OK)
+    }
+
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE], value = ["/{gameId}/loginProperties"])
+    @Throws(BotManagerException::class)
+    fun getGameLoginProperties(@PathVariable gameId: Long): ResponseEntity<BotPropertiesDescriptorsDTO> {
+        val properties = botService.getLoginProperties(gameId)
+        return ResponseEntity(properties, HttpStatus.OK)
     }
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE], value = ["/bot/{botId}/properties"])

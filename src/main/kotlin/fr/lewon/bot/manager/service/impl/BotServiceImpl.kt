@@ -42,12 +42,12 @@ class BotServiceImpl : BotService {
     @Autowired
     private lateinit var botOperationRunner: BotOperationRunner
 
-    override fun createBot(login: String, password: String, gameId: Long, params: Map<String, String?>): BotInfoDTO {
+    override fun createBot(login: String, loginProperties: Map<String, String>, gameId: Long, params: Map<String, String?>): BotInfoDTO {
         val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
         game.botsByLogin[login]?.let {
             throw AlreadyRunningBotException(it.game.name, login)
         }
-        val bot = game.abstractBotBuilder.buildBot(login, password, params)
+        val bot = game.abstractBotBuilder.buildBot(login, loginProperties, params)
         val createdEntity = botRepository.addBot(bot, login, game)
         return botInfoMapper.botToDto(createdEntity)
     }
@@ -105,6 +105,11 @@ class BotServiceImpl : BotService {
     override fun getGameProperties(gameId: Long): BotPropertiesDescriptorsDTO {
         val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
         return BotPropertiesDescriptorsDTO(botPropertyMapper.botPropertiesToDto(game.abstractBotBuilder.botPropertyDescriptors))
+    }
+
+    override fun getLoginProperties(gameId: Long): BotPropertiesDescriptorsDTO {
+        val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
+        return BotPropertiesDescriptorsDTO(botPropertyMapper.botPropertiesToDto(game.abstractBotBuilder.expectedLoginProperties))
     }
 
     @Suppress("UNCHECKED_CAST")
