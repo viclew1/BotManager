@@ -1,7 +1,7 @@
 package fr.lewon.bot.manager
 
 import com.leek.wars.bot.LWBotBuilder
-import fr.lewon.bot.hh.HHBotBuilder
+import fr.lewon.bot.kinkoid.HHBotBuilder
 import fr.lewon.bot.manager.modele.repo.GameRepository
 import fr.lewon.bot.stocks.StocksBotBuilder
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +17,7 @@ class BotManagerApp : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         gameRepository.addGame("Hentai Heroes", HHBotBuilder(), "image/hentaiheroes.jpg")
+        gameRepository.addGame("Comix Harem", HHBotBuilder(), "image/comixharem.jpg")
         gameRepository.addGame("Leek Wars", LWBotBuilder(), "image/leekwars.png")
         gameRepository.addGame("Stonks", StocksBotBuilder(), "image/stocks.jpg")
     }
