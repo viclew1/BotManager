@@ -21,28 +21,37 @@ class BotServiceImpl : BotService {
 
     @Autowired
     private lateinit var gameRepository: GameRepository
+
     @Autowired
     private lateinit var botRepository: BotRepository
 
     @Autowired
     private lateinit var botOperationMapper: BotOperationMapper
+
     @Autowired
     private lateinit var botPropertyMapper: BotPropertyMapper
+
     @Autowired
     private lateinit var gameInfoMapper: GameInfoMapper
+
     @Autowired
     private lateinit var botInfoMapper: BotInfoMapper
+
     @Autowired
     private lateinit var operationResultMapper: OperationResultMapper
+
     @Autowired
     private lateinit var botLogsMapper: BotLogsMapper
+
     @Autowired
     private lateinit var botTaskMapper: BotTaskMapper
 
-    @Autowired
-    private lateinit var botOperationRunner: BotOperationRunner
-
-    override fun createBot(login: String, loginProperties: Map<String, String>, gameId: Long, params: Map<String, String?>): BotInfoDTO {
+    override fun createBot(
+        login: String,
+        loginProperties: Map<String, String>,
+        gameId: Long,
+        params: Map<String, String?>
+    ): BotInfoDTO {
         val game = gameRepository[gameId] ?: throw NoBotForThisGameException(gameId)
         game.botsByLogin[login]?.let {
             throw AlreadyRunningBotException(it.game.name, login)
@@ -55,9 +64,9 @@ class BotServiceImpl : BotService {
     override fun processBotTransition(transition: String, id: Long) {
         val bot = botRepository[id] ?: throw NoBotFoundException(id)
         BotLifeCycleOperation.values()
-                .firstOrNull { it.name.equals(transition, true) }
-                ?.run(bot.bot)
-                ?: throw InvalidTransitionNameException(transition)
+            .firstOrNull { it.name.equals(transition, true) }
+            ?.run(bot.bot)
+            ?: throw InvalidTransitionNameException(transition)
     }
 
     override fun getAllBotInfo(): GameInfoListDTO {
@@ -66,8 +75,8 @@ class BotServiceImpl : BotService {
 
     override fun trimStoppedBots() {
         val toTrim = botRepository.values
-                .filter { b -> b.bot.state == BotState.STOPPED }
-                .toList()
+            .filter { b -> b.bot.state == BotState.STOPPED }
+            .toList()
         botRepository.values.removeAll(toTrim)
         gameRepository.values.forEach { g ->
             g.botsByLogin.values.removeAll(toTrim)
@@ -94,8 +103,10 @@ class BotServiceImpl : BotService {
     override fun callBotOperation(operationId: Long, botId: Long, params: Map<String, String?>): OperationResultDTO {
         val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
         val botOperation = bot.game.botOperationsById[operationId]
-                ?: throw NoBotMethodForThisIdException(bot.game.name, operationId)
-        return operationResultMapper.operationToDTO(botOperationRunner.runOperation(botOperation.botOperation, bot.bot, params))
+            ?: throw NoBotMethodForThisIdException(bot.game.name, operationId)
+        return operationResultMapper.operationToDTO(
+            BotOperationRunner.runOperation(botOperation.botOperation, bot.bot, params)
+        )
     }
 
     override fun getIcon(gameId: Long): ClassPathResource {
@@ -116,7 +127,7 @@ class BotServiceImpl : BotService {
     override fun getBotProperties(botId: Long): Map<String, Any?> {
         val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
         val readOperation = ReadBotPropertiesOperation()
-        val operationResult = botOperationRunner.runOperation(readOperation, bot.bot, HashMap())
+        val operationResult = BotOperationRunner.runOperation(readOperation, bot.bot, HashMap())
         if (!operationResult.isSuccess) {
             throw BotOperationExecutionException(readOperation, operationResult.message)
         }
@@ -127,7 +138,7 @@ class BotServiceImpl : BotService {
     override fun updateBotProperties(botId: Long, properties: Map<String, String?>): Map<String, Any?> {
         val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
         val updateOperation = UpdateBotPropertiesOperation()
-        val operationResult = botOperationRunner.runOperation(updateOperation, bot.bot, properties)
+        val operationResult = BotOperationRunner.runOperation(updateOperation, bot.bot, properties)
         if (!operationResult.isSuccess) {
             throw BotOperationExecutionException(updateOperation, operationResult.message)
         }
@@ -140,7 +151,7 @@ class BotServiceImpl : BotService {
 
     override fun getBotTasks(botId: Long): BotTasksDTO {
         val bot = botRepository[botId] ?: throw NoBotFoundException(botId)
-        return BotTasksDTO(System.currentTimeMillis(), botTaskMapper.tasksToDto(bot.bot.getTasks()))
+        return BotTasksDTO(System.currentTimeMillis(), botTaskMapper.tasksToDto(bot.bot.tasks))
     }
 
 }
